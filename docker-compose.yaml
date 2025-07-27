@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    ports:
+      - 5432:5432
+    volumes:
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      TZ: Asia/Seoul
+      POSTGRES_PASSWORD: YOUR_PASSWORD
+      POSTGRES_HOST_AUTH_METHOD: trust
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ./backend
+    image: kbchat-api:latest
+    ports:
+      - 8088:8088
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build: ./frontend
+    image: kbchat-web:latest
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - api

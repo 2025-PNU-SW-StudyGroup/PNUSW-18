@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@plugin "@tailwindcss/typography";
+
+.custom-bullet {
+  @apply h-[8px] w-[8px] rounded-full bg-[#DBDEE0] transition-all duration-300;
+}
+
+.swiper-pagination-bullet-active.custom-bullet {
+  @apply rounded-full bg-[#96989A];
+}
